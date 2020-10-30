@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const optionsRequired = {type : String, required : true};
 const options = {type : String};
 
 const UserSchema = new Schema({
-    username : optionsRequired,
-    email : optionsRequired,
-    country : optionsRequired,
+    providerId : options,
+    username : options,
+    email : options,
+    country : options,
     skills : options,
-    password : optionsRequired,
+    password : options,
     profile_image : options,
     couverture_image : options,
     link : {
@@ -18,11 +18,10 @@ const UserSchema = new Schema({
         twitter_link : options,
         linkdlin_link : options
     },
-    typeUser : optionsRequired,
+    typeUser : options,
     online : options,
-    created_at : optionsRequired,
-    updated_at : optionsRequired,
-
+    created_at : options,
+    updated_at : options,
 })
 
 module.exports = mongoose.model('User', UserSchema);
