@@ -1,13 +1,14 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+// const FacebookStrategy = require('passport-facebook').Strategy;
+// const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const bcrypt = require('bcryptjs');
-const Users = require('../models/Users');
+const Users = require('../../models/Users');
 const moment = require('moment');
 
 // id an secret api of google and facebook //
+/*
 const key = {
     google: {
         GOOGLE_APP_ID: "##",
@@ -18,6 +19,7 @@ const key = {
         FACEBOOK_APP_SECRET: "##",
     },
 }
+*/
 
 
 
@@ -38,11 +40,12 @@ passport.deserializeUser((userId, done) => {
 
 
 // local signup strategy //
-passport.use('local.signup', new LocalStrategy({
+passport.use('local_signup', new LocalStrategy({
     usernameFiled: 'email',
     passwordFiled: 'password',
     passReqToCallback: true
 }, (req, email, password, done) => {
+    console.log('-------------------------------');
     // search user in database //
     Users.findOne({
         'email': email
@@ -77,6 +80,7 @@ passport.use('local.signup', new LocalStrategy({
                     created_at: dateInscription,
                     updated_at: dateInscription,
                 });
+                console.log("execu");
 
                 // validation of user
                 User.validate((err) => {
@@ -101,7 +105,7 @@ passport.use('local.signup', new LocalStrategy({
 
 
 // local signin strategy //
-passport.use('local.signin', new LocalStrategy({
+passport.use('local_signin', new LocalStrategy({
     usernameFiled: 'email',
     passwordFiled: 'password',
     passReqToCallback: true
@@ -131,6 +135,31 @@ passport.use('local.signin', new LocalStrategy({
     });
 }));
 
+// forgot controler
+exports.forgotPassword = (req, res, next) => {
+    let now = moment().format("dddd MM MMMM YYYY");
+    // hashing new password
+    bcrypt.hash(req.body.password, 10)
+        .then(hash => {
+            Users.findOneAndUpdate(
+                {email: req.body.email},
+                {
+                    $set: {
+                        password: hash,
+                        updated_at: now,
+                    }
+                }
+            ).then(() => res.status(201).json({message: "password modify"}))
+            .catch(err => res.status(200).json({erro}));
+        })
+        .catch(error => res.statue(500).json({error}));
+};
+
+
+/*
+************************************************************************************************
+this code on coment can't execut becaused the id and secret of google and facebook api is mising
+************************************************************************************************
 
 // facebook strategy //
 passport.use(new FacebookStrategy({
@@ -224,3 +253,6 @@ passport.use(new GoogleStrategy({
         };
     });
 }));
+
+************************************************************************************************
+*/

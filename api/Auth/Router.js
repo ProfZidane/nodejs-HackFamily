@@ -2,19 +2,30 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
+const {forgotPassword} = require('./AuthService');
+
 // register with passport.js //
-router.post('/auth/signup', passport.authenticate('local.signup', {
+router.post('/signup', passport.authenticate('local_signup', {
     successRedirect: '/profile',
     failureRedirect: '/auth/signup',
     failureFlash: true
 }));
 
 // login with passport.js and local strategy //
-router.post('/auth/signin', passport.authenticate('local.signin', {
+router.post('/signin', passport.authenticate('local_signin', {
     successRedirect: '/profile',
     failureRedirect: '/auth/signin',
     failureFlash: true
 }));
+
+
+// rout forget password
+router.put('/forgot', forgotPassword);
+
+/*
+************************************************************************************************
+this code on coment can't execut becaused the id and secret of google and facebook api is mising
+************************************************************************************************
 
 // register / login with passport.js and google strategy //
 router.get('/auth/google', passport.authenticate('google', {
@@ -37,6 +48,9 @@ router.get('/auth/facebook/callback', passport.authenticate('facebook', {
     failureRedirect: '/auth/facebook',
     failureFlash: true
 }));
+
+************************************************************************************************
+*/
 
 // get profille //
 router.get('/profile', (req, res, next) => {

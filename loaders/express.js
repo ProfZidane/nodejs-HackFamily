@@ -1,11 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const corse = require('cors');
+
 // add by david
 const passport = require('passport');
 const flash = require('connect-flash');
-const route = require('../api/Auth/Router');
-const passportSetup = require('./passport');
+const routeAuth = require('../api/Auth/Router');
+const routeProfile = require('../api/Profile/Router');
 // add by david
 
 module.exports = async (app) => {
@@ -18,7 +19,8 @@ module.exports = async (app) => {
     app.use(flash());
     app.use(passport.initialize());
     app.use(passport.session());
-    app.use('/', route);
+    app.use('/auth', routeAuth);
+    app.use('/profile', routeProfile);
     // add by david
 
     app.use((req, res, next) => {
